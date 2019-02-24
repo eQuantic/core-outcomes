@@ -4,11 +4,9 @@ using System.Linq;
 
 namespace eQuantic.Core.Outcomes.Results
 {
-    public class BasicResult : IBasicResult
+    public class BasicResult : IResult
     {
         private bool _success;
-        private string _message;
-        private List<string> _messages;
 
         public bool Success
         {
@@ -22,35 +20,13 @@ namespace eQuantic.Core.Outcomes.Results
 
         public int? ErrorCode { get; set; }
 
-        public string Message
-        {
-            get
-            {
-                if (string.IsNullOrEmpty(_message) && Messages.Any())
-                    return Messages.FirstOrDefault();
+        public List<string> Messages { get; set; } = new List<string>();
 
-                return _message;
-            }
-            set { _message = value; }
-        }
-
-        public List<string> Messages
-        {
-            get { return _messages; }
-            set
-            {
-                Success = false;
-                Status = ResultStatus.Error;
-                _messages = value;
-            }
-        }
-
-        public ResultStatus Status { get; set; }
+        public ResultStatus Status { get; set; } = ResultStatus.NotModified;
 
         public BasicResult()
         {
             Success = false;
-            _messages = new List<string>();
         }
     }
 }

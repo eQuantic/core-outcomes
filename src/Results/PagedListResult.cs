@@ -11,10 +11,10 @@ namespace eQuantic.Core.Outcomes.Results
         public int PageSize { get; set; }
         public long TotalCount { get; set; }
 
-        [JsonProperty("__next")]
+        [JsonProperty("__next", NullValueHandling = NullValueHandling.Ignore)]
         public Metadata Next { get; set; }
 
-        [JsonProperty("__previows")]
+        [JsonProperty("__previows", NullValueHandling = NullValueHandling.Ignore)]
         public Metadata Previows { get; set; }
 
         public bool HaveNext => PageIndex * PageSize < TotalCount;

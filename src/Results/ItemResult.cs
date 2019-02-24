@@ -6,7 +6,7 @@ namespace eQuantic.Core.Outcomes.Results
     {
         public TItem Item { get; set; }
 
-        [JsonProperty("__list")]
+        [JsonProperty("__list", NullValueHandling = NullValueHandling.Ignore)]
         public Metadata ListMetadata { get; set; }
     }
 }

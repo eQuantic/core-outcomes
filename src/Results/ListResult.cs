@@ -8,7 +8,7 @@ namespace eQuantic.Core.Outcomes.Results
     {
         public virtual List<T> Items { get; set; }
 
-        [JsonProperty("__metadata")]
+        [JsonProperty("__metadata", NullValueHandling = NullValueHandling.Ignore)]
         public Metadata Metadata { get; set; }
 
         public ListResult()
