@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using eQuantic.Core.Collections;
 using Newtonsoft.Json;
@@ -23,21 +24,28 @@ namespace eQuantic.Core.Outcomes.Results
 
         public PagedListResult() : base()
         {
-
         }
 
-        
-        public PagedListResult(IPagedEnumerable<T> items) : this()
+        public PagedListResult(IEnumerable<T> items, int pageIndex, int pageSize, long totalCount) : this()
         {
-            AddPagedItems(items);
+            AddPagedItems(items, pageIndex, pageSize, totalCount);
+        }
+
+        public PagedListResult(IPagedEnumerable<T> items) : this(items, items.PageIndex, items.PageSize, items.TotalCount)
+        {
+        }
+
+        public void AddPagedItems(IEnumerable<T> items, int pageIndex, int pageSize, long totalCount)
+        {
+            PageIndex = pageIndex;
+            PageSize = pageSize;
+            TotalCount = totalCount;
+            Items = items.ToList();
         }
 
         public void AddPagedItems(IPagedEnumerable<T> items)
         {
-            PageIndex = items.PageIndex;
-            PageSize = items.PageSize;
-            TotalCount = items.TotalCount;
-            Items = items.ToList();
+            AddPagedItems(items, items.PageIndex, items.PageSize, items.TotalCount);
         }
 
         public PagedList<T> ToPagedList()
