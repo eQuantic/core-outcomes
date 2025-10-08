@@ -15,11 +15,11 @@ namespace eQuantic.Core.Outcomes.Results
         [JsonProperty("__next", NullValueHandling = NullValueHandling.Ignore)]
         public Metadata Next { get; set; }
 
-        [JsonProperty("__previows", NullValueHandling = NullValueHandling.Ignore)]
-        public Metadata Previows { get; set; }
+        [JsonProperty("__previous", NullValueHandling = NullValueHandling.Ignore)]
+        public Metadata Previous { get; set; }
 
         public bool HaveNext => PageIndex * PageSize < TotalCount;
-        public bool HavePreviows => (PageIndex * PageSize) - PageSize > 0;
+        public bool HavePrevious => (PageIndex * PageSize) - PageSize > 0;
 
 
         public PagedListResult() : base()

@@ -1,22 +1,32 @@
-﻿
+
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.26430.6
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{0CA2F610-6D57-4D1F-92E3-EDCCEDAD8297}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{8E3A4B4A-6C1D-4F2E-9B3A-1D2E3F4A5B6C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{2FC056A7-A003-42E3-A098-DB87610E0DB4}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{F72DED29-7BF7-4870-81B4-7AFE91270530}"
 	ProjectSection(SolutionItems) = preProject
 		.gitignore = .gitignore
 		LICENSE = LICENSE
 		README.md = README.md
+		CHANGELOG.md = CHANGELOG.md
+		ANALYSIS_AND_IMPROVEMENTS.md = ANALYSIS_AND_IMPROVEMENTS.md
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eQuantic.Core.Outcomes", "src\eQuantic.Core.Outcomes.csproj", "{BBD211FC-47D8-46C9-B219-216ACDE54395}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eQuantic.Core.Outcomes", "src\eQuantic.Core.Outcomes\eQuantic.Core.Outcomes.csproj", "{BBD211FC-47D8-46C9-B219-216ACDE54395}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eQuantic.Core.Outcomes.FluentValidation", "src\eQuantic.Core.Outcomes.FluentValidation\eQuantic.Core.Outcomes.FluentValidation.csproj", "{C5D3E4F5-6A7B-8C9D-0E1F-2A3B4C5D6E7F}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eQuantic.Core.Outcomes.Tests", "tests\eQuantic.Core.Outcomes.Tests\eQuantic.Core.Outcomes.Tests.csproj", "{A1B2C3D4-E5F6-7A8B-9C0D-1E2F3A4B5C6D}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eQuantic.Core.Outcomes.FluentValidation.Tests", "tests\eQuantic.Core.Outcomes.FluentValidation.Tests\eQuantic.Core.Outcomes.FluentValidation.Tests.csproj", "{B2C3D4E5-F6A7-8B9C-0D1E-2F3A4B5C6D7E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "eQuantic.Core.Outcomes.Sample", "samples\eQuantic.Core.Outcomes.Sample\eQuantic.Core.Outcomes.Sample.csproj", "{4286B574-FC97-46C6-BF91-C543426628EA}"
-EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{2FC056A7-A003-42E3-A098-DB87610E0DB4}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -28,6 +38,18 @@ Global
 		{BBD211FC-47D8-46C9-B219-216ACDE54395}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BBD211FC-47D8-46C9-B219-216ACDE54395}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BBD211FC-47D8-46C9-B219-216ACDE54395}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C5D3E4F5-6A7B-8C9D-0E1F-2A3B4C5D6E7F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C5D3E4F5-6A7B-8C9D-0E1F-2A3B4C5D6E7F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C5D3E4F5-6A7B-8C9D-0E1F-2A3B4C5D6E7F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C5D3E4F5-6A7B-8C9D-0E1F-2A3B4C5D6E7F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A1B2C3D4-E5F6-7A8B-9C0D-1E2F3A4B5C6D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A1B2C3D4-E5F6-7A8B-9C0D-1E2F3A4B5C6D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A1B2C3D4-E5F6-7A8B-9C0D-1E2F3A4B5C6D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A1B2C3D4-E5F6-7A8B-9C0D-1E2F3A4B5C6D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B2C3D4E5-F6A7-8B9C-0D1E-2F3A4B5C6D7E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B2C3D4E5-F6A7-8B9C-0D1E-2F3A4B5C6D7E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B2C3D4E5-F6A7-8B9C-0D1E-2F3A4B5C6D7E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B2C3D4E5-F6A7-8B9C-0D1E-2F3A4B5C6D7E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{4286B574-FC97-46C6-BF91-C543426628EA}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{4286B574-FC97-46C6-BF91-C543426628EA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4286B574-FC97-46C6-BF91-C543426628EA}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -38,6 +60,9 @@ Global
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{BBD211FC-47D8-46C9-B219-216ACDE54395} = {0CA2F610-6D57-4D1F-92E3-EDCCEDAD8297}
+		{C5D3E4F5-6A7B-8C9D-0E1F-2A3B4C5D6E7F} = {0CA2F610-6D57-4D1F-92E3-EDCCEDAD8297}
+		{A1B2C3D4-E5F6-7A8B-9C0D-1E2F3A4B5C6D} = {8E3A4B4A-6C1D-4F2E-9B3A-1D2E3F4A5B6C}
+		{B2C3D4E5-F6A7-8B9C-0D1E-2F3A4B5C6D7E} = {8E3A4B4A-6C1D-4F2E-9B3A-1D2E3F4A5B6C}
 		{4286B574-FC97-46C6-BF91-C543426628EA} = {2FC056A7-A003-42E3-A098-DB87610E0DB4}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
