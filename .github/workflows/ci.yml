@@ -1,0 +1,197 @@
+name: CI/CD
+
+on:
+  push:
+    branches: [ master, develop ]
+    tags:
+      - 'v*'
+  pull_request:
+    branches: [ master, develop ]
+  workflow_dispatch:
+    inputs:
+      publish:
+        description: 'Publish to NuGet.org'
+        required: false
+        type: boolean
+        default: false
+
+env:
+  DOTNET_VERSION: '8.0.x'
+  DOTNET_SKIP_FIRST_TIME_EXPERIENCE: true
+  DOTNET_CLI_TELEMETRY_OPTOUT: true
+  ARTIFACTS_PATH: './artifacts'
+
+jobs:
+  build-test-publish:
+    name: Build, Test & Publish
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: ${{ env.DOTNET_VERSION }}
+
+      - name: Install GitVersion
+        uses: gittools/actions/gitversion/setup@v1
+        with:
+          versionSpec: '5.x'
+
+      - name: Determine Version with GitVersion
+        id: gitversion
+        uses: gittools/actions/gitversion/execute@v1
+        with:
+          useConfigFile: true
+
+      - name: Determine publish strategy
+        id: version
+        run: |
+          VERSION="${{ steps.gitversion.outputs.nuGetVersionV2 }}"
+
+          # Decide if should publish
+          if [[ "${{ github.ref }}" == refs/tags/v* ]]; then
+            # Tagged release
+            SHOULD_PUBLISH=true
+            echo "🏷️  Tagged release detected"
+          elif [[ "${{ github.event.inputs.publish }}" == "true" ]]; then
+            # Manual publish
+            SHOULD_PUBLISH=true
+            echo "🖐️  Manual publish triggered"
+          elif [[ "${{ github.ref }}" == "refs/heads/master" ]]; then
+            # Push to master
+            SHOULD_PUBLISH=true
+            echo "🎯 Push to master - will publish"
+          elif [[ "${{ github.ref }}" == "refs/heads/develop" ]]; then
+            # Push to develop - publish preview
+            SHOULD_PUBLISH=true
+            echo "🚀 Push to develop - will publish preview"
+          else
+            # Regular build (PR, feature branches)
+            SHOULD_PUBLISH=false
+            echo "🔨 Regular build - no publish"
+          fi
+
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "should_publish=$SHOULD_PUBLISH" >> $GITHUB_OUTPUT
+          echo "semver=${{ steps.gitversion.outputs.semVer }}" >> $GITHUB_OUTPUT
+          echo "fullsemver=${{ steps.gitversion.outputs.fullSemVer }}" >> $GITHUB_OUTPUT
+
+          echo ""
+          echo "📦 Version Info:"
+          echo "   NuGet: $VERSION"
+          echo "   SemVer: ${{ steps.gitversion.outputs.semVer }}"
+          echo "   Full: ${{ steps.gitversion.outputs.fullSemVer }}"
+          echo "   Branch: ${{ steps.gitversion.outputs.branchName }}"
+          echo "   Publish: $SHOULD_PUBLISH"
+
+      - name: Restore dependencies
+        run: dotnet restore
+
+      - name: Build solution
+        run: |
+          dotnet build \
+            --configuration Release \
+            --no-restore \
+            /p:Version=${{ steps.version.outputs.version }}
+
+      - name: Run tests
+        run: |
+          dotnet test \
+            --configuration Release \
+            --no-build \
+            --verbosity normal \
+            --collect:"XPlat Code Coverage" \
+            --logger "trx;LogFileName=test-results.trx"
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-results
+          path: '**/TestResults/**/*.trx'
+          retention-days: 30
+
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
+        if: always()
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: '**/coverage.cobertura.xml'
+          fail_ci_if_error: false
+
+      - name: Create artifacts directory
+        if: steps.version.outputs.should_publish == 'true'
+        run: mkdir -p ${{ env.ARTIFACTS_PATH }}
+
+      - name: Pack NuGet packages
+        if: steps.version.outputs.should_publish == 'true'
+        run: |
+          echo "📦 Packing eQuantic.Core.Outcomes..."
+          dotnet pack src/eQuantic.Core.Outcomes/eQuantic.Core.Outcomes.csproj \
+            --configuration Release \
+            --no-build \
+            --output ${{ env.ARTIFACTS_PATH }} \
+            /p:PackageVersion=${{ steps.version.outputs.version }}
+
+          echo "📦 Packing eQuantic.Core.Outcomes.FluentValidation..."
+          dotnet pack src/eQuantic.Core.Outcomes.FluentValidation/eQuantic.Core.Outcomes.FluentValidation.csproj \
+            --configuration Release \
+            --no-build \
+            --output ${{ env.ARTIFACTS_PATH }} \
+            /p:PackageVersion=${{ steps.version.outputs.version }}
+
+      - name: List packages
+        if: steps.version.outputs.should_publish == 'true'
+        run: |
+          echo "📋 Generated packages:"
+          ls -lh ${{ env.ARTIFACTS_PATH }}/*.nupkg
+
+      - name: Push to NuGet.org
+        if: steps.version.outputs.should_publish == 'true' && secrets.NUGET_KEY != ''
+        run: |
+          echo "🚀 Publishing to NuGet.org..."
+          dotnet nuget push "${{ env.ARTIFACTS_PATH }}/*.nupkg" \
+            --api-key ${{ secrets.NUGET_KEY }} \
+            --source https://api.nuget.org/v3/index.json \
+            --skip-duplicate \
+            --no-symbols
+        env:
+          NUGET_API_KEY: ${{ secrets.NUGET_KEY }}
+
+      - name: Upload NuGet packages
+        if: steps.version.outputs.should_publish == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: nuget-packages-${{ steps.version.outputs.version }}
+          path: ${{ env.ARTIFACTS_PATH }}/*.nupkg
+          retention-days: 90
+
+      - name: Create summary
+        if: always()
+        run: |
+          echo "## 📊 Build Summary" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- **Version:** ${{ steps.version.outputs.version }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Published:** ${{ steps.version.outputs.should_publish }}" >> $GITHUB_STEP_SUMMARY
+          echo "- **Branch:** ${{ github.ref_name }}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          if [ "${{ steps.version.outputs.should_publish }}" == "true" ]; then
+            echo "## 📦 Published Packages" >> $GITHUB_STEP_SUMMARY
+            echo "" >> $GITHUB_STEP_SUMMARY
+            for package in ${{ env.ARTIFACTS_PATH }}/*.nupkg 2>/dev/null || true; do
+              if [ -f "$package" ]; then
+                filename=$(basename "$package")
+                echo "- ✅ $filename" >> $GITHUB_STEP_SUMMARY
+              fi
+            done
+            echo "" >> $GITHUB_STEP_SUMMARY
+            echo "### 🔗 NuGet.org Links:" >> $GITHUB_STEP_SUMMARY
+            echo "- [eQuantic.Core.Outcomes](https://www.nuget.org/packages/eQuantic.Core.Outcomes/${{ steps.version.outputs.version }})" >> $GITHUB_STEP_SUMMARY
+            echo "- [eQuantic.Core.Outcomes.FluentValidation](https://www.nuget.org/packages/eQuantic.Core.Outcomes.FluentValidation/${{ steps.version.outputs.version }})" >> $GITHUB_STEP_SUMMARY
+          fi

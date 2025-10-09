@@ -1,6 +1,7 @@
 # eQuantic Core Outcomes Library
 
 [![NuGet](https://img.shields.io/nuget/v/eQuantic.Core.Outcomes.svg)](https://www.nuget.org/packages/eQuantic.Core.Outcomes/)
+[![CI/CD](https://github.com/eQuantic/core-outcomes/actions/workflows/ci.yml/badge.svg)](https://github.com/eQuantic/core-outcomes/actions/workflows/ci.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 A modern, type-safe **Result Pattern** implementation for .NET with **Railway-Oriented Programming** support. Handle success and failure cases elegantly without exceptions.
@@ -736,6 +737,51 @@ public void Map_OnSuccessResult_ShouldMapValue()
 For more examples and detailed documentation, see:
 - [Analysis and Improvements](ANALYSIS_AND_IMPROVEMENTS.md)
 - [Samples](samples/)
+
+## 🔧 Development
+
+### Building & Testing
+
+```bash
+# Restore dependencies
+dotnet restore
+
+# Build
+dotnet build
+
+# Run tests
+dotnet test
+```
+
+### Versioning
+
+This project uses **GitVersion** for automatic semantic versioning:
+
+- **master**: Stable releases (e.g., `2.0.0`)
+- **develop**: Preview releases (e.g., `2.1.0-alpha.5`)
+- **feature/***: Feature branches (not published)
+- **release/***: Beta releases (e.g., `2.0.0-beta.1`)
+
+Use [Conventional Commits](https://www.conventionalcommits.org/) to control version increments:
+
+```bash
+# Patch: 2.0.0 → 2.0.1
+git commit -m "fix: resolve memory leak"
+
+# Minor: 2.0.0 → 2.1.0
+git commit -m "feat: add new combinator"
+
+# Major: 2.0.0 → 3.0.0
+git commit -m "feat!: breaking API change"
+```
+
+### Publishing
+
+Packages are automatically published to NuGet.org via GitHub Actions:
+
+- **Push to master**: Publishes stable version
+- **Push to develop**: Publishes preview version
+- **Create tag** (e.g., `v2.0.1`): Publishes specific version
 
 ## 🤝 Contributing
 
