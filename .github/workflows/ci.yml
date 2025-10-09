@@ -184,12 +184,14 @@ jobs:
           if [ "${{ steps.version.outputs.should_publish }}" == "true" ]; then
             echo "## 📦 Published Packages" >> $GITHUB_STEP_SUMMARY
             echo "" >> $GITHUB_STEP_SUMMARY
-            for package in ${{ env.ARTIFACTS_PATH }}/*.nupkg 2>/dev/null || true; do
-              if [ -f "$package" ]; then
-                filename=$(basename "$package")
-                echo "- ✅ $filename" >> $GITHUB_STEP_SUMMARY
-              fi
-            done
+            if [ -d "${{ env.ARTIFACTS_PATH }}" ]; then
+              for package in ${{ env.ARTIFACTS_PATH }}/*.nupkg; do
+                if [ -f "$package" ]; then
+                  filename=$(basename "$package")
+                  echo "- ✅ $filename" >> $GITHUB_STEP_SUMMARY
+                fi
+              done
+            fi
             echo "" >> $GITHUB_STEP_SUMMARY
             echo "### 🔗 NuGet.org Links:" >> $GITHUB_STEP_SUMMARY
             echo "- [eQuantic.Core.Outcomes](https://www.nuget.org/packages/eQuantic.Core.Outcomes/${{ steps.version.outputs.version }})" >> $GITHUB_STEP_SUMMARY
