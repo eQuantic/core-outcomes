@@ -3,7 +3,7 @@
     <!-- Shared metadata and packaging for all src/ packages. The Version below is the
          development default: releases stamp the real version via -p:Version (semantic-release). -->
     <PropertyGroup>
-        <Version>3.0.0</Version>
+        <Version>3.1.0</Version>
         <Authors>eQuantic Tech</Authors>
         <Company>eQuantic Tech</Company>
         <Copyright>2026 eQuantic Tech</Copyright>

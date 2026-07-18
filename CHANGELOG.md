@@ -1,5 +1,12 @@
 # Changelog
 
+## [3.1.0](https://github.com/eQuantic/core-outcomes/compare/v3.0.0...v3.1.0) (2026-07-18)
+
+### Features
+
+* mark the v1 Outcome builder API obsolete ([c190c08](https://github.com/eQuantic/core-outcomes/commit/c190c087867ce1b49e8fdb63b2915baffb0a4992))
+* Minimal APIs support and extensible HTTP mapping ([bf27e44](https://github.com/eQuantic/core-outcomes/commit/bf27e44964a93e67877c9db93a5ed5172affdaa6))
+
 ## [3.0.0](https://github.com/eQuantic/core-outcomes/compare/v2.0.0...v3.0.0) (2026-07-18)
 
 ### ⚠ BREAKING CHANGES
