@@ -53,9 +53,21 @@ public static class ResultExtensions
     /// </example>
     public static IActionResult ToActionResult<T>(this Result<T> result)
     {
+        return result.ToActionResult(OutcomeHttpMapping.Default);
+    }
+
+    /// <summary>
+    /// Converts a Result{T} to an IActionResult using a custom <see cref="OutcomeHttpMapping"/>
+    /// for the error → HTTP translation.
+    /// </summary>
+    /// <typeparam name="T">The type of the value contained in the result.</typeparam>
+    /// <param name="result">The Result{T} instance to convert to an HTTP response.</param>
+    /// <param name="mapping">Custom error → HTTP mapping.</param>
+    public static IActionResult ToActionResult<T>(this Result<T> result, OutcomeHttpMapping mapping)
+    {
         return result.IsSuccess
             ? new OkObjectResult(result.Value)
-            : CreateProblemDetailsResult(result.Errors);
+            : CreateProblemDetailsResult(result.Errors, mapping);
     }
 
     /// <summary>
@@ -101,9 +113,20 @@ public static class ResultExtensions
     /// </example>
     public static IActionResult ToActionResult(this Result result)
     {
+        return result.ToActionResult(OutcomeHttpMapping.Default);
+    }
+
+    /// <summary>
+    /// Converts a Result (without value) to an IActionResult using a custom
+    /// <see cref="OutcomeHttpMapping"/> for the error → HTTP translation.
+    /// </summary>
+    /// <param name="result">The Result instance (without value) to convert to an HTTP response.</param>
+    /// <param name="mapping">Custom error → HTTP mapping.</param>
+    public static IActionResult ToActionResult(this Result result, OutcomeHttpMapping mapping)
+    {
         return result.IsSuccess
             ? new OkResult()
-            : CreateProblemDetailsResult(result.Errors);
+            : CreateProblemDetailsResult(result.Errors, mapping);
     }
 
     /// <summary>
@@ -155,9 +178,25 @@ public static class ResultExtensions
         this Result<T> result,
         int successStatusCode)
     {
+        return result.ToActionResult(successStatusCode, OutcomeHttpMapping.Default);
+    }
+
+    /// <summary>
+    /// Converts a Result{T} to an IActionResult with a custom success status code and a custom
+    /// <see cref="OutcomeHttpMapping"/> for the error → HTTP translation.
+    /// </summary>
+    /// <typeparam name="T">The type of the value contained in the result.</typeparam>
+    /// <param name="result">The Result{T} instance to convert to an HTTP response.</param>
+    /// <param name="successStatusCode">The HTTP status code to return when the result is successful.</param>
+    /// <param name="mapping">Custom error → HTTP mapping.</param>
+    public static IActionResult ToActionResult<T>(
+        this Result<T> result,
+        int successStatusCode,
+        OutcomeHttpMapping mapping)
+    {
         return result.IsSuccess
             ? new ObjectResult(result.Value) { StatusCode = successStatusCode }
-            : CreateProblemDetailsResult(result.Errors);
+            : CreateProblemDetailsResult(result.Errors, mapping);
     }
 
     /// <summary>
@@ -226,9 +265,27 @@ public static class ResultExtensions
         string actionName,
         object? routeValues = null)
     {
+        return result.ToCreatedAtActionResult(actionName, routeValues, OutcomeHttpMapping.Default);
+    }
+
+    /// <summary>
+    /// Converts a Result{T} to a CreatedAtAction result using a custom
+    /// <see cref="OutcomeHttpMapping"/> for the error → HTTP translation.
+    /// </summary>
+    /// <typeparam name="T">The type of the created resource contained in the result.</typeparam>
+    /// <param name="result">The Result{T} instance containing the created resource.</param>
+    /// <param name="actionName">The name of the action that retrieves the created resource.</param>
+    /// <param name="routeValues">Route values used to construct the Location header URI.</param>
+    /// <param name="mapping">Custom error → HTTP mapping.</param>
+    public static IActionResult ToCreatedAtActionResult<T>(
+        this Result<T> result,
+        string actionName,
+        object? routeValues,
+        OutcomeHttpMapping mapping)
+    {
         return result.IsSuccess
             ? new CreatedAtActionResult(actionName, null, routeValues, result.Value)
-            : CreateProblemDetailsResult(result.Errors);
+            : CreateProblemDetailsResult(result.Errors, mapping);
     }
 
     /// <summary>
@@ -283,9 +340,21 @@ public static class ResultExtensions
     /// </example>
     public static IActionResult ToNoContentResult<T>(this Result<T> result)
     {
+        return result.ToNoContentResult(OutcomeHttpMapping.Default);
+    }
+
+    /// <summary>
+    /// Converts a Result{T} to a NoContent (204) result using a custom
+    /// <see cref="OutcomeHttpMapping"/> for the error → HTTP translation.
+    /// </summary>
+    /// <typeparam name="T">The type of the value contained in the result (discarded on success).</typeparam>
+    /// <param name="result">The Result{T} instance to convert to an HTTP response.</param>
+    /// <param name="mapping">Custom error → HTTP mapping.</param>
+    public static IActionResult ToNoContentResult<T>(this Result<T> result, OutcomeHttpMapping mapping)
+    {
         return result.IsSuccess
             ? new NoContentResult()
-            : CreateProblemDetailsResult(result.Errors);
+            : CreateProblemDetailsResult(result.Errors, mapping);
     }
 
     /// <summary>
@@ -339,121 +408,81 @@ public static class ResultExtensions
     /// </example>
     public static IActionResult ToNoContentResult(this Result result)
     {
-        return result.IsSuccess
-            ? new NoContentResult()
-            : CreateProblemDetailsResult(result.Errors);
+        return result.ToNoContentResult(OutcomeHttpMapping.Default);
     }
 
-    private static IActionResult CreateProblemDetailsResult(IReadOnlyList<IError> errors)
+    /// <summary>
+    /// Converts a Result (without value) to a NoContent (204) result using a custom
+    /// <see cref="OutcomeHttpMapping"/> for the error → HTTP translation.
+    /// </summary>
+    /// <param name="result">The Result instance (without value) to convert to an HTTP response.</param>
+    /// <param name="mapping">Custom error → HTTP mapping.</param>
+    public static IActionResult ToNoContentResult(this Result result, OutcomeHttpMapping mapping)
     {
-        var firstError = errors.First();
+        return result.IsSuccess
+            ? new NoContentResult()
+            : CreateProblemDetailsResult(result.Errors, mapping);
+    }
 
-        return firstError.Type switch
+    private static IActionResult CreateProblemDetailsResult(IReadOnlyList<IError> errors, OutcomeHttpMapping mapping)
+    {
+        var firstError = errors[0];
+        var statusCode = mapping.GetStatusCode(firstError);
+
+        if (firstError.Type == ErrorType.Validation)
         {
-            ErrorType.NotFound => new NotFoundObjectResult(CreateProblemDetails(
-                "Not Found",
-                "The requested resource was not found.",
-                StatusCodes.Status404NotFound,
-                errors)),
+            var validationProblem = CreateValidationProblemDetails(errors, statusCode, mapping);
+            return statusCode == StatusCodes.Status400BadRequest
+                ? new BadRequestObjectResult(validationProblem)
+                : new ObjectResult(validationProblem) { StatusCode = statusCode };
+        }
 
-            ErrorType.Validation => new BadRequestObjectResult(CreateValidationProblemDetails(
-                "Validation Error",
-                "One or more validation errors occurred.",
-                StatusCodes.Status400BadRequest,
-                errors)),
+        var problem = CreateProblemDetails(errors, statusCode, mapping);
 
-            ErrorType.Conflict => new ConflictObjectResult(CreateProblemDetails(
-                "Conflict",
-                "A conflict occurred while processing your request.",
-                StatusCodes.Status409Conflict,
-                errors)),
-
-            ErrorType.Unauthorized => new UnauthorizedObjectResult(CreateProblemDetails(
-                "Unauthorized",
-                "Authentication is required to access this resource.",
-                StatusCodes.Status401Unauthorized,
-                errors)),
-
-            ErrorType.Forbidden => new ObjectResult(CreateProblemDetails(
-                "Forbidden",
-                "You do not have permission to access this resource.",
-                StatusCodes.Status403Forbidden,
-                errors))
-            { StatusCode = StatusCodes.Status403Forbidden },
-
-            ErrorType.BusinessRule => new UnprocessableEntityObjectResult(CreateProblemDetails(
-                "Business Rule Violation",
-                "A business rule was violated.",
-                StatusCodes.Status422UnprocessableEntity,
-                errors)),
-
-            _ => new ObjectResult(CreateProblemDetails(
-                "Internal Server Error",
-                "An error occurred while processing your request.",
-                StatusCodes.Status500InternalServerError,
-                errors))
-            { StatusCode = StatusCodes.Status500InternalServerError }
+        // Preserve the concrete IActionResult types the pre-mapping implementation produced.
+        return statusCode switch
+        {
+            StatusCodes.Status404NotFound => new NotFoundObjectResult(problem),
+            StatusCodes.Status409Conflict => new ConflictObjectResult(problem),
+            StatusCodes.Status401Unauthorized => new UnauthorizedObjectResult(problem),
+            StatusCodes.Status422UnprocessableEntity => new UnprocessableEntityObjectResult(problem),
+            _ => new ObjectResult(problem) { StatusCode = statusCode },
         };
     }
 
     private static ProblemDetails CreateProblemDetails(
-        string title,
-        string detail,
+        IReadOnlyList<IError> errors,
         int statusCode,
-        IReadOnlyList<IError> errors)
+        OutcomeHttpMapping mapping)
     {
-        var problemDetails = new ProblemDetails
+        var firstError = errors[0];
+        return new ProblemDetails
         {
-            Title = title,
-            Detail = detail,
+            Title = mapping.GetTitle(firstError),
+            Detail = mapping.GetDetail(firstError),
             Status = statusCode,
             Extensions =
             {
-                ["errors"] = errors.Select(e => new
-                {
-                    code = e.Code,
-                    message = e.Message,
-                    type = e.Type.ToString(),
-                    severity = e.Severity.ToString(),
-                    timestamp = e.Timestamp
-                }).ToList()
+                ["errors"] = mapping.GetErrorsPayload(errors)
             }
         };
-
-        return problemDetails;
     }
 
     private static ValidationProblemDetails CreateValidationProblemDetails(
-        string title,
-        string detail,
+        IReadOnlyList<IError> errors,
         int statusCode,
-        IReadOnlyList<IError> errors)
+        OutcomeHttpMapping mapping)
     {
-        var validationErrors = errors
-            .Where(e => e.Type == ErrorType.Validation)
-            .GroupBy(e => e.Metadata.TryGetValue("PropertyName", out var prop) ? prop.ToString() : "General")
-            .ToDictionary(
-                g => g.Key ?? "General",
-                g => g.Select(e => e.Message).ToArray());
-
-        var problemDetails = new ValidationProblemDetails(validationErrors)
+        var firstError = errors[0];
+        return new ValidationProblemDetails(mapping.GetValidationErrors(errors))
         {
-            Title = title,
-            Detail = detail,
+            Title = mapping.GetTitle(firstError),
+            Detail = mapping.GetDetail(firstError),
             Status = statusCode,
             Extensions =
             {
-                ["errors"] = errors.Select(e => new
-                {
-                    code = e.Code,
-                    message = e.Message,
-                    type = e.Type.ToString(),
-                    severity = e.Severity.ToString(),
-                    timestamp = e.Timestamp
-                }).ToList()
+                ["errors"] = mapping.GetErrorsPayload(errors)
             }
         };
-
-        return problemDetails;
     }
 }

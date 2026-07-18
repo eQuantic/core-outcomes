@@ -413,6 +413,12 @@ public IActionResult GetUser(int id)
 // Others → 500 Internal Server Error
 ```
 
+Minimal APIs get the same treatment through `ToHttpResult` / `ToCreatedHttpResult` /
+`ToNoContentHttpResult` (`TypedResults`-based), and the whole error → HTTP translation is
+extensible by deriving from `OutcomeHttpMapping` and passing your instance to any of the
+extensions — see the
+[package README](https://www.nuget.org/packages/eQuantic.Core.Outcomes.AspNetCore).
+
 ### Custom Status Codes
 
 ```csharp
