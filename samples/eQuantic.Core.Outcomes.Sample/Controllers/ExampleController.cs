@@ -7,6 +7,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
+// This controller demonstrates the deprecated v1 builder API on purpose.
+#pragma warning disable CS0618
+
 namespace eQuantic.Core.Outcomes.Sample.Controllers
 {
     public class ExampleController : Controller

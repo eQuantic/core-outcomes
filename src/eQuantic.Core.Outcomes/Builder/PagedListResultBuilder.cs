@@ -3,6 +3,7 @@ using eQuantic.Core.Collections;
 using eQuantic.Core.Outcomes.Results;
 
 namespace eQuantic.Core.Outcomes.Builder {
+    [Obsolete("The v1 builder API is deprecated and will be removed in v4. Use Result / Result<T> factory methods (Success/Failure) with the eQuantic.Core.Outcomes.Extensions pipeline instead.")]
     public class PagedListResultBuilder<TItem> : ResultBuilder<PagedListResultBuilder<TItem>, PagedListResult<TItem>>
     {
         public PagedListResultBuilder() : base(new PagedListResult<TItem>()) {

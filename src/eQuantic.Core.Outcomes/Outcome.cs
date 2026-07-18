@@ -2,6 +2,7 @@ using eQuantic.Core.Outcomes.Builder;
 
 namespace eQuantic.Core.Outcomes
 {
+    [Obsolete("The v1 builder API is deprecated and will be removed in v4. Use Result / Result<T> factory methods (Success/Failure) with the eQuantic.Core.Outcomes.Extensions pipeline instead.")]
     public static class Outcome
     {
         public static BasicResultBuilder FromBasicResult()
