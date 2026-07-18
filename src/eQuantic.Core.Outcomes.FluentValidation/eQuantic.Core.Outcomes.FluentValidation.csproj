@@ -1,44 +1,17 @@
-<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <Description>FluentValidation integration for eQuantic Core Outcomes Library</Description>
-    <Copyright>2019-2025</Copyright>
-    <AssemblyTitle>eQuantic.Core.Outcomes.FluentValidation</AssemblyTitle>
-    <Version>2.0.0</Version>
-    <Authors>eQuantic Systems</Authors>
-    <TargetFrameworks>net6.0;net8.0</TargetFrameworks>
-    <LangVersion>latest</LangVersion>
-    <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <AssemblyName>eQuantic.Core.Outcomes.FluentValidation</AssemblyName>
-    <PackageId>eQuantic.Core.Outcomes.FluentValidation</PackageId>
-    <PackageTags>Result;Outcome;FluentValidation;Validation;Railway-Oriented-Programming</PackageTags>
-    <PackageReleaseNotes>v2.0.0 - FluentValidation integration for Result Pattern</PackageReleaseNotes>
-    <PackageProjectUrl>https://github.com/eQuantic/core-outcomes</PackageProjectUrl>
-    <PackageReadmeFile>README.md</PackageReadmeFile>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageOutputPath>../../artifacts/</PackageOutputPath>
-    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <RepositoryUrl>https://github.com/eQuantic/core-outcomes</RepositoryUrl>
-    <RepositoryType>git</RepositoryType>
-    <AssemblyVersion>2.0.0.0</AssemblyVersion>
-    <FileVersion>2.0.0.0</FileVersion>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
-    <PackageIcon>Icon.png</PackageIcon>
-  </PropertyGroup>
+    <PropertyGroup>
+        <Description>FluentValidation integration for eQuantic Core Outcomes Library: turn validation results into typed Result failures.</Description>
+        <PackageTags>Result;Outcome;FluentValidation;Validation;Railway-Oriented-Programming</PackageTags>
+        <PackageReleaseNotes>v3.0.0 - Modernization: net8.0/net10.0, FluentValidation 12.</PackageReleaseNotes>
+    </PropertyGroup>
 
-  <ItemGroup>
-    <PackageReference Include="FluentValidation" Version="11.9.0" />
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="FluentValidation" Version="12.1.1" />
+    </ItemGroup>
 
-  <ItemGroup>
-    <ProjectReference Include="..\eQuantic.Core.Outcomes\eQuantic.Core.Outcomes.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="..\icons\Icon.png" Pack="true" PackagePath="" />
-    <None Include="..\..\README.md" Pack="true" PackagePath="\" />
-  </ItemGroup>
+    <ItemGroup>
+        <ProjectReference Include="..\eQuantic.Core.Outcomes\eQuantic.Core.Outcomes.csproj" />
+    </ItemGroup>
 
 </Project>

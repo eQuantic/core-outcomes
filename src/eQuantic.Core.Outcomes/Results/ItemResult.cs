@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text.Json.Serialization;
 
 namespace eQuantic.Core.Outcomes.Results
 {
@@ -6,7 +6,8 @@ namespace eQuantic.Core.Outcomes.Results
     {
         public TItem Item { get; set; }
 
-        [JsonProperty("__list", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonPropertyName("__list")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public Metadata ListMetadata { get; set; }
     }
 }

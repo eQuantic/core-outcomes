@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Reflection;
 using eQuantic.Core.Collections;
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace eQuantic.Core.Outcomes.Results
 {
@@ -12,10 +12,12 @@ namespace eQuantic.Core.Outcomes.Results
         public int PageSize { get; set; }
         public long TotalCount { get; set; }
 
-        [JsonProperty("__next", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonPropertyName("__next")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public Metadata Next { get; set; }
 
-        [JsonProperty("__previous", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonPropertyName("__previous")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public Metadata Previous { get; set; }
 
         public bool HaveNext => PageIndex * PageSize < TotalCount;

@@ -6,28 +6,32 @@
 
 A modern, type-safe **Result Pattern** implementation for .NET with **Railway-Oriented Programming** support. Handle success and failure cases elegantly without exceptions.
 
-## 🚀 What's New in v2.0
+## 🚀 What's New in v3.0
 
-- ✅ **.NET 6 & .NET 8** support
-- ✅ **Immutable records** for thread-safety
-- ✅ **Railway-Oriented Programming** (Map, Bind, Match)
-- ✅ **Typed error system** with categorization
-- ✅ **Full async/await** support
-- ✅ **ASP.NET Core integration** with Problem Details (RFC 7807)
-- ✅ **Result Combinators** for aggregating multiple results
-- ✅ **Observability & Tracing** with correlation IDs and execution timing
-- ✅ **Fluent API** for better developer experience
-- ✅ **Comprehensive test coverage**
+- ✅ **.NET 8 & .NET 10** support (.NET 6 dropped — end of life)
+- ✅ **Dependency-free core** — the ASP.NET Core integration moved to its own package,
+  `eQuantic.Core.Outcomes.AspNetCore`; the core no longer references `Microsoft.AspNetCore.App`
+- ✅ **System.Text.Json** serialization attributes (Newtonsoft.Json dependency removed)
+- ✅ **FluentValidation 12** in the integration package
+- ✅ **Automated releases** — semantic-release computes versions from commit messages
+  (see [docs/releasing.md](docs/releasing.md))
+
+Everything from v2 is still here: immutable records, Railway-Oriented Programming
+(Map/Bind/Match), typed errors, full async support, result combinators, observability and
+RFC 7807 integration.
 
 ## 📦 Installation
 
+| Package | Purpose |
+|---------|---------|
+| `eQuantic.Core.Outcomes` | The Result Pattern core — dependency-free |
+| `eQuantic.Core.Outcomes.AspNetCore` | `Result` → HTTP responses with Problem Details |
+| `eQuantic.Core.Outcomes.FluentValidation` | FluentValidation results as typed failures |
+
 ```bash
 dotnet add package eQuantic.Core.Outcomes
-```
-
-Or via Package Manager:
-```powershell
-Install-Package eQuantic.Core.Outcomes
+dotnet add package eQuantic.Core.Outcomes.AspNetCore        # for web APIs
+dotnet add package eQuantic.Core.Outcomes.FluentValidation  # for validation pipelines
 ```
 
 ## 🏆 Why Choose eQuantic.Core.Outcomes?
@@ -91,7 +95,7 @@ Error.External()      // Third-party failures
 | **Async Support** | ✅ Complete | ⚠️ Partial | ❌ Limited | ⚠️ Basic |
 | **Railway-Oriented** | ✅ Full | ⚠️ Partial | ⚠️ Partial | ⚠️ Partial |
 | **Typed Errors** | ✅ 8 types | ⚠️ Generic | ⚠️ Basic | ⚠️ Basic |
-| **.NET 6/8** | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes |
+| **.NET 8/10** | ✅ Yes | ✅ Yes | ✅ Yes | ✅ Yes |
 | **XML Docs** | ✅ Complete | ⚠️ Basic | ⚠️ Basic | ⚠️ Basic |
 
 **Our Advantage**: We're the **ONLY** library combining observability, comprehensive combinators, FluentValidation integration, and full Railway-Oriented Programming in a modern, well-documented package.
@@ -381,7 +385,12 @@ var emailError = result.Errors
 
 ## 🌐 ASP.NET Core Integration
 
-Automatic conversion to HTTP responses with Problem Details (RFC 7807):
+Automatic conversion to HTTP responses with Problem Details (RFC 7807). Since v3 this lives in
+its own package, keeping the core dependency-free:
+
+```bash
+dotnet add package eQuantic.Core.Outcomes.AspNetCore
+```
 
 ```csharp
 using eQuantic.Core.Outcomes.AspNetCore;

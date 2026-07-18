@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using Newtonsoft.Json;
+using System.Text.Json.Serialization;
 
 namespace eQuantic.Core.Outcomes.Results
 {
@@ -8,7 +8,8 @@ namespace eQuantic.Core.Outcomes.Results
     {
         public virtual List<T> Items { get; set; }
 
-        [JsonProperty("__metadata", NullValueHandling = NullValueHandling.Ignore)]
+        [JsonPropertyName("__metadata")]
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
         public Metadata Metadata { get; set; }
 
         public ListResult()

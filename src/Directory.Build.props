@@ -1,0 +1,33 @@
+<Project>
+
+    <!-- Shared metadata and packaging for all src/ packages. The Version below is the
+         development default: releases stamp the real version via -p:Version (semantic-release). -->
+    <PropertyGroup>
+        <Version>3.0.0</Version>
+        <Authors>eQuantic Tech</Authors>
+        <Company>eQuantic Tech</Company>
+        <Copyright>2026 eQuantic Tech</Copyright>
+        <TargetFrameworks>net8.0;net10.0</TargetFrameworks>
+        <LangVersion>latest</LangVersion>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <PackageProjectUrl>https://github.com/eQuantic/core-outcomes</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/eQuantic/core-outcomes</RepositoryUrl>
+        <RepositoryType>git</RepositoryType>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageIcon>Icon.png</PackageIcon>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <PackageOutputPath>$(MSBuildThisFileDirectory)../artifacts/</PackageOutputPath>
+        <IncludeSymbols>true</IncludeSymbols>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
+        <PublishRepositoryUrl>true</PublishRepositoryUrl>
+        <EmbedUntrackedSources>true</EmbedUntrackedSources>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <None Include="$(MSBuildThisFileDirectory)icons/Icon.png" Pack="true" PackagePath="" Visible="false" />
+        <None Include="$(MSBuildProjectDirectory)/README.md" Pack="true" PackagePath="/" Visible="false" />
+    </ItemGroup>
+
+</Project>

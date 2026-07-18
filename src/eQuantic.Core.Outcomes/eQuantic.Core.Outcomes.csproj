@@ -1,49 +1,13 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <Description>eQuantic Core Outcomes Library - Modern Result Pattern implementation with Railway-Oriented Programming</Description>
-    <Copyright>2019-2025</Copyright>
-    <AssemblyTitle>eQuantic.Core.Outcomes</AssemblyTitle>
-    <Version>2.0.0</Version>
-    <Authors>eQuantic Systems</Authors>
-    <TargetFrameworks>net6.0;net8.0</TargetFrameworks>
-    <LangVersion>latest</LangVersion>
-    <Nullable>enable</Nullable>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <AssemblyName>eQuantic.Core.Outcomes</AssemblyName>
-    <PackageId>eQuantic.Core.Outcomes</PackageId>
-    <PackageTags>Result;Outcome;Railway-Oriented-Programming;Functional;Error-Handling;Railway;Monad</PackageTags>
-    <PackageReleaseNotes>v2.0.0 - Major update: .NET 6/8 support, immutable records, Railway-Oriented Programming, typed errors, async support</PackageReleaseNotes>
-    <PackageProjectUrl>https://github.com/eQuantic/core-outcomes</PackageProjectUrl>
-    <PackageReadmeFile>README.md</PackageReadmeFile>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageOutputPath>../../artifacts/</PackageOutputPath>
-    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
-    <PackageIcon>Icon.png</PackageIcon>
-    <RepositoryUrl>https://github.com/eQuantic/core-outcomes</RepositoryUrl>
-    <RepositoryType>git</RepositoryType>
-    <AssemblyVersion>2.0.0.0</AssemblyVersion>
-    <FileVersion>2.0.0.0</FileVersion>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
-  </PropertyGroup>
+    <PropertyGroup>
+        <Description>eQuantic Core Outcomes Library - Modern Result Pattern implementation with Railway-Oriented Programming: immutable results, typed errors, combinators, async support and observability. Dependency-free core (ASP.NET Core integration lives in eQuantic.Core.Outcomes.AspNetCore).</Description>
+        <PackageTags>Result;Outcome;Railway-Oriented-Programming;Functional;Error-Handling;Railway;Monad</PackageTags>
+        <PackageReleaseNotes>v3.0.0 - Modernization: net8.0/net10.0, ASP.NET Core integration split into eQuantic.Core.Outcomes.AspNetCore (the core package no longer references Microsoft.AspNetCore.App), dependencies updated.</PackageReleaseNotes>
+    </PropertyGroup>
 
-
-  <ItemGroup>
-    <PackageReference Include="eQuantic.Core" Version="1.4.10" />
-    <PackageReference Include="System.Text.Json" Version="8.0.6" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <FrameworkReference Include="Microsoft.AspNetCore.App" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="..\icons\Icon.png" Pack="true" PackagePath="" />
-    <None Include="..\icons\Icon_details.png" Pack="true" PackagePath="" />
-    <None Include="..\icons\Icon_dialog.png" Pack="true" PackagePath="" />
-    <None Include="..\icons\Icon_list.png" Pack="true" PackagePath="" />
-    <None Include="..\..\README.md" Pack="true" PackagePath="\" />
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="eQuantic.Core" Version="1.8.4" />
+    </ItemGroup>
 
 </Project>
