@@ -1,5 +1,20 @@
 # Changelog
 
+## [3.0.0](https://github.com/eQuantic/core-outcomes/compare/v2.0.0...v3.0.0) (2026-07-18)
+
+### ⚠ BREAKING CHANGES
+
+* .NET 6 support is dropped (end of life). The ASP.NET Core
+extensions (ToActionResult and friends) moved from eQuantic.Core.Outcomes to
+the new eQuantic.Core.Outcomes.AspNetCore package — the core package no
+longer references Microsoft.AspNetCore.App. Result serialization attributes
+now target System.Text.Json instead of Newtonsoft.Json, and the
+FluentValidation integration requires FluentValidation 12.
+
+### Features
+
+* eQuantic.Core.Outcomes v3 ([d75d982](https://github.com/eQuantic/core-outcomes/commit/d75d9824b72e7da0d4ed7968016a856f734bf784))
+
 ## [2.0.0] - 2025-10-07
 
 ### 🚀 Major Update - Breaking Changes
